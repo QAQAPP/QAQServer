@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "nlp-tags-ccd60",
+  "private_key_id": "fa776124e78360056d4d71d9fcf70209f28a2ca9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQD1OZZRN2T+zBUj\n+VQi0nSGSi+so2Rs/AJGNoENZTohhV5L4usGDEtcYed6BFSIrItMK/EpSvbCd4WE\ntcpFfmRNrxcdm12MuNvDp4Y2o7pHUur86X/M9OHBn7mn3PId+XCrizG9j3JGjSSN\n3PiPwXTw65d11on2B/VZNJddMkUTVfU4xw5HD72N6yz1SLPdibdvg6uYSenqmHnw\n69ZlYPBTGFgPGk0aachlmHAApnftMa5ZHX3SBJImJxkOmVWC3nrDNGqL9PwU0SAX\nyYaHYj6v8Bh/eQNIciM1Z0LLq4S/Utj5IKRxcSUnPDxFS+t7qXzwfFE/hU/CBe1Q\nQoVhox/zAgMBAAECggEBAMf17VzMjs42HAb5iGHcuqfGVpmvonQ8Cp62UwVZRc2P\nsxSuNHb6D3mFW/tjDItmJzA1pLDHL+/jBjzw/78rER9HZtH9norhMlKYiBiF6Z+/\nPV5+CHhYNr5sQDdhMwy+GeHH3wdzsPtWnDgRt52BYpoRga/VASpd0vKqr8KO+0SH\neoiVY0plUiIBO2WlxH90LBiIgjHF5Sufoup0YU8KxdS8bb74IGhbHV+6sRiZlf+V\nfczQCNQ2jDk04h+5fcHBz3phOK8fagdwOnOjT9HH04oePhwyUcB+fQpvZc3flGJR\nNe9CDgVRGTwCLeE4V2szxIwxfpCVUzHamTw3EPeQJgECgYEA/ZB0GkMWBUXcgLVI\nTBsROgomPlzupUDvI3yhIU886ma9UZKLLkgMNdAJd/kbkIoSMUr9OAvU0BJ6+Py3\nRcIK92rDTT6LaG2i+JusEil6veMC72TMOmkjwOA299dm4RSWMF0LcL3XyOfWynDp\nbE8TYeRuCgpLgsxa2yT39bDZkZ0CgYEA95SgTznkvDtk/U8sC5r0wWW540uRHhon\n42+U2FPcLoxiEKA/kGjrzSrAP62pVt0+KOLUv59AxYbxlu1EVa2DaU3I3DpJ4LoQ\nGYRAFRIQaDAFpeljmM0jx8UvwU9Mckwgy91sl50Rs95iLZkHyEc0sFrlc1ixz689\nkPycqdVrSs8CgYAwME7QWuWJdQB1+X3W8OHyPNGN0o2MHG4WOW5J7UwvY/0gzo/i\n6NBhPbs+8Lm7W3Ifqhe7mgwEyy5RuX1/JWR+Ju0c9gD6hLOPOc6W2Qk5ozYAlxB1\nHVwtIK9xpJ8psYblhBlTgNDMnrrkWFcUPWb6mLYM9G3rWrj9ouX47HY8xQKBgQDE\nR3N0fAxoYpok7MCZjsbeEHz3wzAQcmIPQKX7fzh/OtKAJdte7J+M74iss0weTpZ6\nKaLLLEFYmCwuIHrdhgs5z+4fEqMBY+FhqWR4j/Kr9u5zY32PZYspVJ4QnoKX1tzl\nYu01odOoCvVA+yKdWD5gVh+0e6u0YFTp/ithxY4jJwKBgQCmHMEqoiBEc3dd7BIe\nvGCM86sIWpi7wS+TKsIDTUAfHLS0YPJpXaX33YwV0SPdjXgpkiys/YdMh2p9mmTf\nHp1KxA0oDPSAdqL9cPkP2jUwUj5CNxsC/JAgawtcFi+I7fE6ad7GMJiPNPIi1QNu\niTp3pdHv2u5oNGIKTW/47ViZ/w==\n-----END PRIVATE KEY-----\n",
+  "client_email": "matthewlam-test@nlp-tags-ccd60.iam.gserviceaccount.com",
+  "client_id": "106775072001813871780",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/matthewlam-test%40nlp-tags-ccd60.iam.gserviceaccount.com"
+}
