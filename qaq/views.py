@@ -180,20 +180,19 @@ def index2(request):
 		});
 		
 def add_ques(request):
-	question = request.GET.get('qDescription')
+	question = request.POST.get('qDescription')
 	#print(question)
-	opts = request.GET.get('qOptions')
-	tags = request.GET.get('qTags')
-	ano = request.GET.get('qAnonymous')
-	uid = request.GET.get('uid')
+	opts = request.POST.get('qOptions')
+	tags = request.POST.get('qTags')
+	ano = request.POST.get('qAnonymous')
+	uid = request.POST.get('uid')
 	user = User.objects.filter(uidd=uid)
-	#print(tags)
 	if user.count() is 0:
 		curruser = User(uidd=uid)
 		curruser.save()
 	else:
 		curruser = user[0]
-
+	curruser.usedq_set.create(qidd = question)
 	tagstr = ''
 	for tag in tags:
 		tagset = curruser.tag_set.filter(tName = tag)
@@ -211,6 +210,7 @@ def add_ques(request):
 	# add options and tags to the question
 	for op in opts:
 		q.option_set.create(Description = op)
+	
 	# for tag in tags:
 	# 	q.tag_set.create(qName = tag)
 	return JsonResponse(
@@ -220,8 +220,9 @@ def add_ques(request):
 		'error':None
 		})
 
+#@csrf_exempt
 def get_ques(request):
-	qids = request.GET.get('qids')
+	qids = request.POST.get('qids')
 	if not qids is None:
 		res = []
 		for qid in qids:
@@ -242,34 +243,48 @@ def get_ques(request):
 			'questions':res
 			})
 
-	uid = request.GET.get('uid')
+	uid = request.POST.get('uid')
 	user = User.objects.filter(uidd=uid)
 	#num = request.GET.get('num')
 	#assume the json package contains user tags(we can change later)
 	#tags = request.GET.get('tags')
+	qset = Question.objects.none()
 	if not user.count() is 0 and not user[0].tag_set.all().count() is 0:
-		qset = Question.objects.none()
 		for tag in user[0].tag_set.all():
+			print(tag.tName)
 			qset = qset | Question.objects.filter(qTags__contains=tag.tName)
 		qset.distinct()
 		if not user[0].usedq_set.all().count() is 0:
 			for uq in user[0].usedq_set.all():
-				print(uq.qidd)
 				qset = qset.exclude(qDescription = uq.qidd)
-		#qset.exclude(concluded = True)
-		q = qset.exclude(concluded = True).order_by('-qTime')[0]	#multiple by [0:5]
-		#print(q.concluded)
-	else:
-		qset = Question.objects.filter(concluded = False)
-		q = Question.objects.order_by('-qTime')[0]
-
-	if user is None:
+		qset = qset.exclude(concluded = True).order_by('-qTime')
+		
+	if qset.count() is 0:
+		qset = Question.objects.filter(concluded = False).order_by('-qTime')
+		
+	if not user.count() is 0:
+		if not user[0].usedq_set.all().count() is 0:
+			for uq in user[0].usedq_set.all():
+				qset = qset.exclude(qDescription = uq.qidd)
+		qset = qset.exclude(concluded = True).order_by('-qTime')	#multiple by [0:5]
+	if qset.count() is 0:
+		return JsonResponse(
+		{
+		'success':False,
+		'error':"No question found",
+		'qids': None,
+		'qDescription': None,
+		'qOptions':None,
+		'qAnonymous': None
+		})
+	q = qset[0]
+	if not user:
 		curruser = User(uidd=uid)
 		curruser.save()
 	else:
 		curruser = user[0]
 	curruser.usedq_set.create(qidd=q.qDescription)
-
+	curruser.save()
 	# for each in q:
 	# 	print(each.qDescription)
 	# print(q.qDescription)
@@ -287,30 +302,28 @@ def get_ques(request):
 		'qAnonymous': q.qAnonymous
 		#test before adding other components
 		})
-# curl -d 'gasgsad=sdgas'
 def add_op(request):
-	q = Question.objects.get(pk = request.GET.get('qid'))
-	q.option_set.create(Description = request.GET.get('oDescription'))
+	q = Question.objects.get(pk = request.POST.get('qid'))
+	q.option_set.create(Description = request.POST.get('oDescription'))
 	q.save()
 def choose_op(request):
-	q = Question.objects.get(pk = request.GET.get('qid'))
-	print(q)
-	op = q.option_set.get(Description=request.GET.get('oid'))
+	q = Question.objects.get(pk = request.POST.get('qid'))
+	op = q.option_set.get(Description=request.POST.get('oid'))
 	op.counter +=1
 	op.save()
 	q.save()
 def conclude(request):
-	q = Question.objects.get(pk = request.GET.get('qid'))
+	q = Question.objects.get(pk = request.POST.get('qid'))
 	q.concluded = True
 	q.save()
+
 def index(request):
 	# if request.method != 'POST':
 	# 	return JsonResponse({'Error':'Please use POST request'})
 	
-	# if not request.GET.__contains__('q'):
+	# if not request.POST.__contains__('q'):
 	# 	return JsonResponse({'Error':'Please add key q to get request'})
-	action = request.GET.get('action')
-	#print(action)
+	action = request.POST.get('action')
 	if action == 'get_questions':
 		return get_ques(request)
 	elif action == 'add_questions':
@@ -326,9 +339,3 @@ def index(request):
 			'success':True,
 			'error':None,
 		})
-
-#def getQ()
-#	Q_list = Question.objects.order_by('date_asked')[0]
-#	output = ', '.join([q.qDescription for q in Q_list])
-#	return HttpResponse(output)
-	#maybe return output works? needs research
