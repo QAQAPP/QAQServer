@@ -12,6 +12,7 @@ import operator
 import time
 from .models import Question, Option, Tag, User, UsedQ
 from django.db.models.query import EmptyQuerySet
+from django.views.decorators.csrf import csrf_exempt
 #from models import Question
 
 DISCOVERY_URL = ('https://{api}.googleapis.com/'
@@ -178,7 +179,7 @@ def index2(request):
 		{
 			'tags':sortedTags
 		});
-		
+@csrf_exempt		
 def add_ques(request):
 	question = request.POST.get('qDescription')
 	#print(question)
@@ -220,7 +221,7 @@ def add_ques(request):
 		'error':None
 		})
 
-#@csrf_exempt
+@csrf_exempt
 def get_ques(request):
 	qids = request.POST.get('qids')
 	if not qids is None:
@@ -302,24 +303,28 @@ def get_ques(request):
 		'qAnonymous': q.qAnonymous
 		#test before adding other components
 		})
+@csrf_exempt
 def add_op(request):
 	q = Question.objects.get(pk = request.POST.get('qid'))
 	q.option_set.create(Description = request.POST.get('oDescription'))
 	q.save()
+@csrf_exempt
 def choose_op(request):
 	q = Question.objects.get(pk = request.POST.get('qid'))
 	op = q.option_set.get(Description=request.POST.get('oid'))
 	op.counter +=1
 	op.save()
 	q.save()
+@csrf_exempt
 def conclude(request):
 	q = Question.objects.get(pk = request.POST.get('qid'))
 	q.concluded = True
 	q.save()
 
+@csrf_exempt
 def index(request):
-	# if request.method != 'POST':
-	# 	return JsonResponse({'Error':'Please use POST request'})
+	 if request.method != 'POST':
+	 	return JsonResponse({'Error':'Please use POST request'})
 	
 	# if not request.POST.__contains__('q'):
 	# 	return JsonResponse({'Error':'Please add key q to get request'})
