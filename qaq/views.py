@@ -323,8 +323,8 @@ def conclude(request):
 
 @csrf_exempt
 def index(request):
-	 if request.method != 'POST':
-	 	return JsonResponse({'Error':'Please use POST request'})
+	if request.method != 'POST':
+		return JsonResponse({'Error':'Please use POST request'})
 	
 	# if not request.POST.__contains__('q'):
 	# 	return JsonResponse({'Error':'Please add key q to get request'})
