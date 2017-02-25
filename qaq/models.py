@@ -15,7 +15,7 @@ class Question(models.Model):
 		return self.qDescription
 
 class User(models.Model):
-	uidd = models.IntegerField(default = 0)
+	uidd = models.CharField(max_length=80, default = 'not_valid')
 
 class UsedQ(models.Model):
 	qidd = models.CharField(max_length=200, default = 'no_q')
