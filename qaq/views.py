@@ -13,6 +13,7 @@ import time
 from .models import Question, Option, Tag, User, UsedQ
 from django.db.models.query import EmptyQuerySet
 from django.views.decorators.csrf import csrf_exempt
+from collections import defaultdict
 #from models import Question
 
 DISCOVERY_URL = ('https://{api}.googleapis.com/'
@@ -183,12 +184,12 @@ def index2(request):
 	
 @csrf_exempt		
 def add_ques(d):
-	question = d[qDescription]
+	question = d['qDescription']
 	#print(question)
-	opts = d[qOptions]
-	tags = d[qTags]
-	ano = d[qAnonymous]
-	uid = d[uid]
+	opts = d['qOptions']
+	tags = d['qTags']
+	ano = d['qAnonymous']
+	uid = d['uid']
 	user = User.objects.filter(uidd=uid)
 	if user.count() is 0:
 		curruser = User(uidd=uid)
@@ -211,8 +212,9 @@ def add_ques(d):
 	q.save()
 	#print(opts)
 	# add options and tags to the question
-	for op in opts:
-		q.option_set.create(Description = op)
+	if not opts == None:
+		for op in opts:
+			q.option_set.create(Description = op)
 	
 	# for tag in tags:
 	# 	q.tag_set.create(qName = tag)
@@ -225,8 +227,8 @@ def add_ques(d):
 
 @csrf_exempt
 def get_ques(d):
-	qids = d[qids]
-	if not qids is None:
+	if 'qids' in d:
+		qids = d['qids']
 		res = []
 		for qid in qids:
 			q = Question.objects.get(pk=qid)
@@ -246,7 +248,7 @@ def get_ques(d):
 			'questions':res
 			})
 
-	uid = d[uid]
+	uid = d['uid']
 	user = User.objects.filter(uidd=uid)
 	#num = request.GET.get('num')
 	#assume the json package contains user tags(we can change later)
@@ -307,19 +309,19 @@ def get_ques(d):
 		})
 @csrf_exempt
 def add_op(d):
-	q = Question.objects.get(pk = d[qid])
-	q.option_set.create(Description = d[oDescription])
+	q = Question.objects.get(pk = d['qid'])
+	q.option_set.create(Description = d['oDescription'])
 	q.save()
 @csrf_exempt
 def choose_op(d):
-	q = Question.objects.get(pk = d[qid])
-	op = q.option_set.get(Description=d[oid])
+	q = Question.objects.get(pk = d['qid'])
+	op = q.option_set.get(Description=d['oid'])
 	op.counter +=1
 	op.save()
 	q.save()
 @csrf_exempt
 def conclude(d):
-	q = Question.objects.get(pk = d[qid])
+	q = Question.objects.get(pk = d['qid'])
 	q.concluded = True
 	q.save()
 
@@ -330,8 +332,10 @@ def index(request):
 	
 	# if not request.POST.__contains__('q'):
 	# 	return JsonResponse({'Error':'Please add key q to get request'})
-	d = json.load(request.body)
-	action = d[action]
+	d = defaultdict(lambda: "default", key="some_value")
+	d = json.loads(request.body)
+	d = defaultdict(lambda: None, d)
+	action = d['action']
 	if action == 'get_questions':
 		return get_ques(d)
 	elif action == 'add_questions':
