@@ -329,10 +329,6 @@ def conclude(d):
 def index(request):
 	if request.method != 'POST':
 		return JsonResponse({'Error':'Please use POST request'})
-	
-	# if not request.POST.__contains__('q'):
-	# 	return JsonResponse({'Error':'Please add key q to get request'})
-	d = defaultdict(lambda: "default", key="some_value")
 	d = json.loads(request.body)
 	d = defaultdict(lambda: None, d)
 	action = d['action']
