@@ -179,14 +179,16 @@ def index2(request):
 		{
 			'tags':sortedTags
 		});
+
+	
 @csrf_exempt		
-def add_ques(request):
-	question = request.POST.get('qDescription')
+def add_ques(d):
+	question = d[qDescription]
 	#print(question)
-	opts = request.POST.get('qOptions')
-	tags = request.POST.get('qTags')
-	ano = request.POST.get('qAnonymous')
-	uid = request.POST.get('uid')
+	opts = d[qOptions]
+	tags = d[qTags]
+	ano = d[qAnonymous]
+	uid = d[uid]
 	user = User.objects.filter(uidd=uid)
 	if user.count() is 0:
 		curruser = User(uidd=uid)
@@ -222,8 +224,8 @@ def add_ques(request):
 		})
 
 @csrf_exempt
-def get_ques(request):
-	qids = request.POST.get('qids')
+def get_ques(d):
+	qids = d[qids]
 	if not qids is None:
 		res = []
 		for qid in qids:
@@ -244,7 +246,7 @@ def get_ques(request):
 			'questions':res
 			})
 
-	uid = request.POST.get('uid')
+	uid = d[uid]
 	user = User.objects.filter(uidd=uid)
 	#num = request.GET.get('num')
 	#assume the json package contains user tags(we can change later)
@@ -304,20 +306,20 @@ def get_ques(request):
 		#test before adding other components
 		})
 @csrf_exempt
-def add_op(request):
-	q = Question.objects.get(pk = request.POST.get('qid'))
-	q.option_set.create(Description = request.POST.get('oDescription'))
+def add_op(d):
+	q = Question.objects.get(pk = d[qid])
+	q.option_set.create(Description = d[oDescription])
 	q.save()
 @csrf_exempt
-def choose_op(request):
-	q = Question.objects.get(pk = request.POST.get('qid'))
-	op = q.option_set.get(Description=request.POST.get('oid'))
+def choose_op(d):
+	q = Question.objects.get(pk = d[qid])
+	op = q.option_set.get(Description=d[oid])
 	op.counter +=1
 	op.save()
 	q.save()
 @csrf_exempt
-def conclude(request):
-	q = Question.objects.get(pk = request.POST.get('qid'))
+def conclude(d):
+	q = Question.objects.get(pk = d[qid])
 	q.concluded = True
 	q.save()
 
@@ -328,19 +330,21 @@ def index(request):
 	
 	# if not request.POST.__contains__('q'):
 	# 	return JsonResponse({'Error':'Please add key q to get request'})
-	action = request.POST.get('action')
+	d = json.load(request.body)
+	action = d[action]
 	if action == 'get_questions':
-		return get_ques(request)
+		return get_ques(d)
 	elif action == 'add_questions':
-		return add_ques(request)
+		return add_ques(d)
 	elif action == 'add_option':
-		add_op(request)
+		add_op(d)
 	elif action == 'choose_option':
-		choose_op(request)
+		choose_op(d)
 	elif action == 'conclude_ques':
-		conclude(request)
+		conclude(d)
 	return JsonResponse(
 		{
 			'success':True,
 			'error':None,
 		})
+
