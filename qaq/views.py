@@ -181,10 +181,8 @@ def index2(request):
 			'tags':sortedTags
 		});
 
-	
 @csrf_exempt		
 def add_ques(d):
-	print d
 	question = d['qDescription']
 	print(question)
 	opts = d['qOptions']
@@ -204,7 +202,6 @@ def add_ques(d):
 		if tagset.count() is 0:
 			curruser.tag_set.create(tName = tag)
 		tagstr += tag + ','
-	print d
 	q = Question(
 	qDescription = question,
 	qTags = tagstr,	#store all tags in one CharArray and search 
@@ -216,7 +213,7 @@ def add_ques(d):
 	# add options and tags to the question
 	if not opts == None:
 		for op in opts:
-			q.option_set.create(Description = op)
+			q.option_set.create(oDescription = op['oDescription'], oOfferBy = op['oOfferBy'], oVal = op['oVal'])
 	
 	# for tag in tags:
 	# 	q.tag_set.create(qName = tag)
@@ -312,13 +309,13 @@ def get_ques(d):
 @csrf_exempt
 def add_op(d):
 	q = Question.objects.get(pk = d['qid'])
-	q.option_set.create(Description = d['oDescription'])
+	q.option_set.create(oDescription = d['oDescription'])
 	q.save()
 @csrf_exempt
 def choose_op(d):
 	q = Question.objects.get(pk = d['qid'])
-	op = q.option_set.get(Description=d['oid'])
-	op.counter +=1
+	op = q.option_set.get(oDescription=d['oid'])
+	op.oVal +=1
 	op.save()
 	q.save()
 @csrf_exempt
@@ -349,4 +346,3 @@ def index(request):
 			'success':True,
 			'error':None,
 		})
-
