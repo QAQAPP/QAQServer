@@ -184,8 +184,9 @@ def index2(request):
 	
 @csrf_exempt		
 def add_ques(d):
+	print d
 	question = d['qDescription']
-	#print(question)
+	print(question)
 	opts = d['qOptions']
 	tags = d['qTags']
 	ano = d['qAnonymous']
@@ -203,6 +204,7 @@ def add_ques(d):
 		if tagset.count() is 0:
 			curruser.tag_set.create(tName = tag)
 		tagstr += tag + ','
+	print d
 	q = Question(
 	qDescription = question,
 	qTags = tagstr,	#store all tags in one CharArray and search 
@@ -277,7 +279,7 @@ def get_ques(d):
 		{
 		'success':False,
 		'error':"No question found",
-		'qids': None,
+		'qid': None,
 		'qDescription': None,
 		'qOptions':None,
 		'qAnonymous': None
@@ -301,7 +303,7 @@ def get_ques(d):
 		{
 		'success':True,
 		'error':None,
-		'qids': q.pk,
+		'qid': q.pk,
 		'qDescription': q.qDescription,
 		'qOptions':options,
 		'qAnonymous': q.qAnonymous
