@@ -22,9 +22,11 @@ class UsedQ(models.Model):
 	user = models.ForeignKey(User, on_delete = models.CASCADE)
 
 class Option(models.Model):
-	Description = models.CharField(max_length = 200)
+	oDescription = models.CharField(max_length = 200)
 	qQuestions = models.ForeignKey(Question, on_delete = models.CASCADE)
-	counter = models.IntegerField(default = 0)
+	oOferBy = models.CharField(max_length = 200)
+	oVal = models.IntegerField(default = 0)
+
 
 class Tag(models.Model):
 	tName = models.CharField(max_length = 30, default = "no_tag")
