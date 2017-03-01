@@ -10,7 +10,7 @@ from oauth2client.client import GoogleCredentials
 import sqlite3
 import operator
 import time
-from .models import Question, Option, Tag, User, UsedQ
+from .models import Question, Tag, User, UsedQ
 from django.db.models.query import EmptyQuerySet
 from django.views.decorators.csrf import csrf_exempt
 from collections import defaultdict
@@ -195,7 +195,7 @@ def add_ques(d):
 		curruser.save()
 	else:
 		curruser = user[0]
-	curruser.usedq_set.create(qidd = question)
+	curruser.usedq_set.create(qidd = qid)
 	tagstr = ''
 	for tag in tags:
 		tagset = curruser.tag_set.filter(tName = tag)
@@ -204,7 +204,7 @@ def add_ques(d):
 		tagstr += tag + ','
 	q = Question(
 	#qDescription = question,
-	qid_ = qid,
+	qid = qid,
 	qTags = tagstr,	#store all tags in one CharArray and search 
 					#by ...__contains = tag
 	qTime = int(round(time.time() * 10))#,
@@ -231,7 +231,7 @@ def get_ques(d):
 	#	qids = d['qids']
 	#	res = []
 	#	for qid in qids:
-	#		q = Question.objects.get(qid_=qid)
+	#		q = Question.objects.get(qid=qid)
 	#		temp = []
 	#		temp.append(qid)
 	#		temp.append(q.qDescription)
@@ -260,7 +260,7 @@ def get_ques(d):
 		qset.distinct()
 		if not user[0].usedq_set.all().count() is 0:
 			for uq in user[0].usedq_set.all():
-				qset = qset.exclude(qid_ = uq.qidd)
+				qset = qset.exclude(qid = uq.qidd)
 		qset = qset.exclude(concluded = True).order_by('-qTime')
 		
 	if qset.count() is 0:
@@ -269,7 +269,7 @@ def get_ques(d):
 	if not user.count() is 0:
 		if not user[0].usedq_set.all().count() is 0:
 			for uq in user[0].usedq_set.all():
-				qset = qset.exclude(qid_= uq.qidd)
+				qset = qset.exclude(qid= uq.qidd)
 		qset = qset.exclude(concluded = True).order_by('-qTime')	#multiple by [0:5]
 	if qset.count() is 0:
 		return JsonResponse(
@@ -287,7 +287,7 @@ def get_ques(d):
 		curruser.save()
 	else:
 		curruser = user[0]
-	curruser.usedq_set.create(qidd=q.qid_)
+	curruser.usedq_set.create(qidd=q.qid)
 	curruser.save()
 	# for each in q:
 	# 	print(each.qDescription)
@@ -296,11 +296,12 @@ def get_ques(d):
 #	options = []
 #	for op in q.option_set.all():
 #		options.append(op.Description)
+	print 'my qid', q.qid
 	return JsonResponse(
 		{
 		'success':True,
 		'error':None,
-		'qid': q.qid_,
+		'qid': q.qid,
 #		'qDescription': q.qDescription,
 #		'qOptions':options,
 #		'qAnonymous': q.qAnonymous
@@ -320,7 +321,7 @@ def choose_op(d):
 	q.save()
 @csrf_exempt
 def conclude(d):
-	q = Question.objects.get(qid_ = d['qid'])
+	q = Question.objects.get(qid = d['qid'])
 	q.concluded = True
 	q.save()
 
@@ -335,10 +336,6 @@ def index(request):
 		return get_ques(d)
 	elif action == 'add_questions':
 		return add_ques(d)
-	elif action == 'add_option':
-		#add_op(d)
-	elif action == 'choose_option':
-		#choose_op(d)
 	elif action == 'conclude_ques':
 		conclude(d)
 	return JsonResponse(
