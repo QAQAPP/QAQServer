@@ -183,12 +183,12 @@ def index2(request):
 
 @csrf_exempt		
 def add_ques(d):
-	question = d['qDescription']
-	print(question)
-	opts = d['qOptions']
+	#question = d['qDescription']
+	#opts = d['qOptions']
 	tags = d['qTags']
-	ano = d['qAnonymous']
+	#ano = d['qAnonymous']
 	uid = d['uid']
+	qid = d['qid']
 	user = User.objects.filter(uidd=uid)
 	if user.count() is 0:
 		curruser = User(uidd=uid)
@@ -203,49 +203,50 @@ def add_ques(d):
 			curruser.tag_set.create(tName = tag)
 		tagstr += tag + ','
 	q = Question(
-	qDescription = question,
+	#qDescription = question,
+	qid_ = qid,
 	qTags = tagstr,	#store all tags in one CharArray and search 
 					#by ...__contains = tag
-	qTime = int(round(time.time() * 10)),
-	qAnonymous = ano)
+	qTime = int(round(time.time() * 10))#,
+	#qAnonymous = ano
+	)
 	q.save()
-	#print(opts)
 	# add options and tags to the question
-	if not opts == None:
-		for op in opts:
-			q.option_set.create(oDescription = op['oDescription'], oOfferBy = op['oOfferBy'], oVal = op['oVal'])
+	#if not opts == None:
+	#	for op in opts:
+	#		q.option_set.create(oDescription = op['oDescription'], oOfferBy = op['oOfferBy'], oVal = op['oVal'])
 	
 	# for tag in tags:
 	# 	q.tag_set.create(qName = tag)
 	return JsonResponse(
 		{
-		'qid':q.pk,
+	#	'qid':q.pk,
 		'success':True,
 		'error':None
 		})
 
 @csrf_exempt
 def get_ques(d):
-	if 'qids' in d:
-		qids = d['qids']
-		res = []
-		for qid in qids:
-			q = Question.objects.get(pk=qid)
-			temp = []
-			temp.append(qid)
-			temp.append(q.qDescription)
-			options = []
-			for op in q.option_set.all():
-				options.append(op.Description)
-			temp.append(options)
-			temp.append(q.qAnonymous)
-			res.append(temp)
-		return JsonResponse(
-			{
-			'success':True,
-			'error':None,
-			'questions':res
-			})
+	#if 'qids' in d:
+	#	qids = d['qids']
+	#	res = []
+	#	for qid in qids:
+	#		q = Question.objects.get(qid_=qid)
+	#		temp = []
+	#		temp.append(qid)
+	#		temp.append(q.qDescription)
+	#		options = []
+	#		for op in q.option_set.all():
+	#			options.append(op.Description)
+	#		temp.append(options)
+	#		temp.append(q.qAnonymous)
+	#		res.append(temp)
+	#	return JsonResponse(
+	#		{
+	#		'success':True,
+	#		'error':None,
+	#		'questions':res
+	#		})
 
 	uid = d['uid']
 	user = User.objects.filter(uidd=uid)
@@ -255,12 +256,11 @@ def get_ques(d):
 	qset = Question.objects.none()
 	if not user.count() is 0 and not user[0].tag_set.all().count() is 0:
 		for tag in user[0].tag_set.all():
-			print(tag.tName)
 			qset = qset | Question.objects.filter(qTags__contains=tag.tName)
 		qset.distinct()
 		if not user[0].usedq_set.all().count() is 0:
 			for uq in user[0].usedq_set.all():
-				qset = qset.exclude(qDescription = uq.qidd)
+				qset = qset.exclude(qid_ = uq.qidd)
 		qset = qset.exclude(concluded = True).order_by('-qTime')
 		
 	if qset.count() is 0:
@@ -269,7 +269,7 @@ def get_ques(d):
 	if not user.count() is 0:
 		if not user[0].usedq_set.all().count() is 0:
 			for uq in user[0].usedq_set.all():
-				qset = qset.exclude(qDescription = uq.qidd)
+				qset = qset.exclude(qid_= uq.qidd)
 		qset = qset.exclude(concluded = True).order_by('-qTime')	#multiple by [0:5]
 	if qset.count() is 0:
 		return JsonResponse(
@@ -277,9 +277,9 @@ def get_ques(d):
 		'success':False,
 		'error':"No question found",
 		'qid': None,
-		'qDescription': None,
-		'qOptions':None,
-		'qAnonymous': None
+		#'qDescription': None,
+		#'qOptions':None,
+		#'qAnonymous': None
 		})
 	q = qset[0]
 	if not user:
@@ -287,23 +287,23 @@ def get_ques(d):
 		curruser.save()
 	else:
 		curruser = user[0]
-	curruser.usedq_set.create(qidd=q.qDescription)
+	curruser.usedq_set.create(qidd=q.qid_)
 	curruser.save()
 	# for each in q:
 	# 	print(each.qDescription)
 	# print(q.qDescription)
 	# print(q.pk)
-	options = []
-	for op in q.option_set.all():
-		options.append(op.Description)
+#	options = []
+#	for op in q.option_set.all():
+#		options.append(op.Description)
 	return JsonResponse(
 		{
 		'success':True,
 		'error':None,
-		'qid': q.pk,
-		'qDescription': q.qDescription,
-		'qOptions':options,
-		'qAnonymous': q.qAnonymous
+		'qid': q.qid_,
+#		'qDescription': q.qDescription,
+#		'qOptions':options,
+#		'qAnonymous': q.qAnonymous
 		#test before adding other components
 		})
 @csrf_exempt
@@ -320,7 +320,7 @@ def choose_op(d):
 	q.save()
 @csrf_exempt
 def conclude(d):
-	q = Question.objects.get(pk = d['qid'])
+	q = Question.objects.get(qid_ = d['qid'])
 	q.concluded = True
 	q.save()
 
@@ -336,9 +336,9 @@ def index(request):
 	elif action == 'add_questions':
 		return add_ques(d)
 	elif action == 'add_option':
-		add_op(d)
+		#add_op(d)
 	elif action == 'choose_option':
-		choose_op(d)
+		#choose_op(d)
 	elif action == 'conclude_ques':
 		conclude(d)
 	return JsonResponse(
