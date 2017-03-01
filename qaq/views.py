@@ -271,6 +271,8 @@ def get_ques(d):
 			for uq in user[0].usedq_set.all():
 				qset = qset.exclude(qid= uq.qidd)
 		qset = qset.exclude(concluded = True).order_by('-qTime')	#multiple by [0:5]
+
+	print qset
 	if qset.count() is 0:
 		return JsonResponse(
 		{

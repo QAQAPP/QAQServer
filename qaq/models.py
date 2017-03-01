@@ -12,7 +12,7 @@ class Question(models.Model):
 	qAnonymous = models.BooleanField(default = True)
 	concluded = models.BooleanField(default = False)
 	def __str__(self):
-		return self.qDescription
+		return self.qid
 
 class User(models.Model):
 	uidd = models.CharField(max_length=200, default = 'not_valid')
