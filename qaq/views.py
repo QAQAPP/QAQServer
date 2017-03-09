@@ -307,7 +307,7 @@ def get_ques(d):
 		{
 		'success':True,
 		'error':None,
-		'qid': qids,
+		'qids': qids,
 #		'qDescription': q.qDescription,
 #		'qOptions':options,
 #		'qAnonymous': q.qAnonymous
