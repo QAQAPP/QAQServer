@@ -272,7 +272,6 @@ def get_ques(d):
 				qset = qset.exclude(qid= uq.qidd)
 		qset = qset.exclude(concluded = True).order_by('-qTime')	#multiple by [0:5]
 
-	print qset
 	if qset.count() is 0:
 		return JsonResponse(
 		{
@@ -289,7 +288,13 @@ def get_ques(d):
 		curruser.save()
 	else:
 		curruser = user[0]
-	curruser.usedq_set.create(qidd=q.qid)
+	qids = []
+	num = d['num']
+	for x in range(0,num-1):
+		if x < qset.count():
+			q = qset[x]
+			qids.append(q.qid)
+			curruser.usedq_set.create(qidd=q.qid)
 	curruser.save()
 	# for each in q:
 	# 	print(each.qDescription)
@@ -298,12 +303,11 @@ def get_ques(d):
 #	options = []
 #	for op in q.option_set.all():
 #		options.append(op.Description)
-	print 'my qid', q.qid
 	return JsonResponse(
 		{
 		'success':True,
 		'error':None,
-		'qid': q.qid,
+		'qid': qids,
 #		'qDescription': q.qDescription,
 #		'qOptions':options,
 #		'qAnonymous': q.qAnonymous
@@ -331,7 +335,7 @@ def conclude(d):
 def index(request):
 	if request.method != 'POST':
 		return JsonResponse({'Error':'Please use POST request'})
-	d = json.loads(request.body)
+	d = json.loads(request.body.decode('utf-8'))
 	d = defaultdict(lambda: None, d)
 	action = d['action']
 	if action == 'get_questions':
