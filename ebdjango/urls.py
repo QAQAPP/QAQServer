@@ -19,5 +19,6 @@ from django.conf.urls import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^qaq/', include('qaq.urls'))
+    url(r'^qaq/', include('qaq.urls')),
+    url(r'^question_tags/', include('question_tags.urls'))
 ]

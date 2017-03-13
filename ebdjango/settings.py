@@ -25,13 +25,14 @@ SECRET_KEY = '@a%c%z!av0a!!cu42@$2#ze2ga(x$b1&8zrh2d3t=ykfo50qy@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
 	'qaq.apps.QaqConfig',
+    'question_tags.apps.QuestionTagsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -75,10 +76,21 @@ WSGI_APPLICATION = 'ebdjango.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Matthew_Test_Database',
+        'USER': 'Matthew_Lam',
+        'PASSWORD': 'fareed_f',
+        'HOST': 'matthew-test-instance.cy4v75d6qra7.us-west-2.rds.amazonaws.com',
+        'PORT': '3306',
     }
 }
 

@@ -5,7 +5,7 @@ class Question(models.Model):
 	#qDescription = models.CharField(max_length = 200, default = "no_name")
 	#qOptions = ArrayField(models.CharField(max_length =200), size = 6)
 	#10 tags
-	qid = models.CharField(max_length = 200)
+	qid = models.CharField(max_length = 200,default = "no_id")
 	qTags = models.CharField(max_length = 200,default = "no_tag")
 	#qTime = models.IntegerField(default = 0)
 	qTime = models.IntegerField(default = 0)
