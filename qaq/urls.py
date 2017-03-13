@@ -3,7 +3,7 @@ from . import views
 #import nltk
 
 urlpatterns = [
-    url(r'^matthew/$', views.index2, name='index2'),
+    #url(r'^matthew/$', views.index2, name='index2'),
 	url(r'^zhaowei/$', views.index, name='index'),
 ]
 

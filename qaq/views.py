@@ -56,130 +56,130 @@ def googleEntityAnalysis(sentence):
 	return wordList
 
 				 
-def handleQuery(request):
-	emptyArr = []
-	if request.method != 'GET':
-		return emptyArr
-	if not request.GET.__contains__('q'):
-		return emptyArr
+# def handleQuery(request):
+# 	emptyArr = []
+# 	if request.method != 'GET':
+# 		return emptyArr
+# 	if not request.GET.__contains__('q'):
+# 		return emptyArr
 		
-	question = request.GET.get('q')
-	wordList = googleEntityAnalysis(question)
+# 	question = request.GET.get('q')
+# 	wordList = googleEntityAnalysis(question)
 	
-	#wordListString = request.GET.get('q')
+# 	#wordListString = request.GET.get('q')
 	
-	#wordList = nltk.word_tokenize(wordListString);
-	#wordList = wordListString.split(',',5)
+# 	#wordList = nltk.word_tokenize(wordListString);
+# 	#wordList = wordListString.split(',',5)
 	
-	conn = sqlite3.connect('test1.db')
-	c = conn.cursor()
+# 	conn = sqlite3.connect('test1.db')
+# 	c = conn.cursor()
 	
-	maxnumtag = 8;
-	tagDict = {}
-	for word in wordList:
-		wordName = word['name']
-		wordName = wordName.lower()
-		salience = word['salience']
-		c.execute("SELECT tags.name, hit, total FROM words join tags on words.t_id = tags.id where words.name='%s' order by hit / total limit %d" % (wordName, maxnumtag))
-		tags = c.fetchall()
-		if not tags is []:
-			for j in range (0, len(tags)):
-				tagName = tags[j][0]
-				hit = tags[j][1]
-				total = tags[j][2]
-				hitRatio = float(hit) / total
-				if not tagName in tagDict:
-					tagDict[tagName] = float(hitRatio) * salience
-				else:
-					tagDict[tagName] += float(hitRatio) * salience
-	conn.commit()
-	conn.close()
+# 	maxnumtag = 8;
+# 	tagDict = {}
+# 	for word in wordList:
+# 		wordName = word['name']
+# 		wordName = wordName.lower()
+# 		salience = word['salience']
+# 		c.execute("SELECT tags.name, hit, total FROM words join tags on words.t_id = tags.id where words.name='%s' order by hit / total limit %d" % (wordName, maxnumtag))
+# 		tags = c.fetchall()
+# 		if not tags is []:
+# 			for j in range (0, len(tags)):
+# 				tagName = tags[j][0]
+# 				hit = tags[j][1]
+# 				total = tags[j][2]
+# 				hitRatio = float(hit) / total
+# 				if not tagName in tagDict:
+# 					tagDict[tagName] = float(hitRatio) * salience
+# 				else:
+# 					tagDict[tagName] += float(hitRatio) * salience
+# 	conn.commit()
+# 	conn.close()
 	
-	sortedTags = sorted(tagDict.items(), key = operator.itemgetter(1), reverse=True)
+# 	sortedTags = sorted(tagDict.items(), key = operator.itemgetter(1), reverse=True)
 	
-	numberOfTags = min(maxnumtag, len(sortedTags))
+# 	numberOfTags = min(maxnumtag, len(sortedTags))
 	
-	return sortedTags[:numberOfTags]
+# 	return sortedTags[:numberOfTags]
 	
-def handleUpdate(request):
-	emptyArr = []
-	if request.method != 'GET':
-		return emptyArr
-	if not request.GET.__contains__('q'):
-		return emptyArr
-	if not request.GET.__contains__('t'):
-		return emptyArr
+# def handleUpdate(request):
+# 	emptyArr = []
+# 	if request.method != 'GET':
+# 		return emptyArr
+# 	if not request.GET.__contains__('q'):
+# 		return emptyArr
+# 	if not request.GET.__contains__('t'):
+# 		return emptyArr
 	
-	question = request.GET.get('q')
-	#TODO
-	#wordList = wordListString.split(',',5)
-	tagstring = request.GET.get('t')
-	tagstring = tagstring.lower()
-	tags = tagstring.split(',', 11)
-	for tag in tags:
-		tag = tag.strip()
+# 	question = request.GET.get('q')
+# 	#TODO
+# 	#wordList = wordListString.split(',',5)
+# 	tagstring = request.GET.get('t')
+# 	tagstring = tagstring.lower()
+# 	tags = tagstring.split(',', 11)
+# 	for tag in tags:
+# 		tag = tag.strip()
 	
-	wordDictList = googleEntityAnalysis(question)
+# 	wordDictList = googleEntityAnalysis(question)
 	
-	conn = sqlite3.connect('test1.db')
-	c = conn.cursor()
+# 	conn = sqlite3.connect('test1.db')
+# 	c = conn.cursor()
 	
-	wordList = []
-	for wordDict in wordDictList:
-		word = wordDict['name']
-		word = word.lower()
-		wordList.append(word)
-	t_idList = []
-	for tag in tags:
-		c.execute("select id from tags where name = '%s' limit 1" % (tag))
-		tagrow = c.fetchone()
-		if tagrow is None:
-			c.execute("insert into tags(name) values('%s')" % (tag))
-			c.execute("select id from tags where name = '%s' limit 1" % (tag))
-			newtagrow = c.fetchone()
-			t_id = newtagrow[0]
-			t_idList.append(t_id)
-			for word in wordList:
-				c.execute("insert into words(name, t_id, hit,total) values('%s',%d,1,2)" % (word, t_id))
-		else:
-			t_id = tagrow[0]
-			t_idList.append(t_id)
-			for word in wordList:
-				c.execute("select w_id from words where name = '%s' and t_id = %d limit 1" % (word, t_id))
-				wordrow = c.fetchone()
-				if wordrow is None:
-					c.execute("insert into words(name, t_id, hit,total) values('%s',%d,1,2)" % (word, t_id))
-				else:
-					w_id = wordrow[0]
-					c.execute("update words set hit = hit+1,total=total+1 where w_id = %d" %(w_id))
+# 	wordList = []
+# 	for wordDict in wordDictList:
+# 		word = wordDict['name']
+# 		word = word.lower()
+# 		wordList.append(word)
+# 	t_idList = []
+# 	for tag in tags:
+# 		c.execute("select id from tags where name = '%s' limit 1" % (tag))
+# 		tagrow = c.fetchone()
+# 		if tagrow is None:
+# 			c.execute("insert into tags(name) values('%s')" % (tag))
+# 			c.execute("select id from tags where name = '%s' limit 1" % (tag))
+# 			newtagrow = c.fetchone()
+# 			t_id = newtagrow[0]
+# 			t_idList.append(t_id)
+# 			for word in wordList:
+# 				c.execute("insert into words(name, t_id, hit,total) values('%s',%d,1,2)" % (word, t_id))
+# 		else:
+# 			t_id = tagrow[0]
+# 			t_idList.append(t_id)
+# 			for word in wordList:
+# 				c.execute("select w_id from words where name = '%s' and t_id = %d limit 1" % (word, t_id))
+# 				wordrow = c.fetchone()
+# 				if wordrow is None:
+# 					c.execute("insert into words(name, t_id, hit,total) values('%s',%d,1,2)" % (word, t_id))
+# 				else:
+# 					w_id = wordrow[0]
+# 					c.execute("update words set hit = hit+1,total=total+1 where w_id = %d" %(w_id))
 		
-	for word in wordList:
-		addtotalsql = "update words set total = total + 1 where name = '%s' and t_id not in ({seq})".format(seq=','.join(['?']*len(t_idList)))
-		c.execute(addtotalsql, t_idList)	
+# 	for word in wordList:
+# 		addtotalsql = "update words set total = total + 1 where name = '%s' and t_id not in ({seq})".format(seq=','.join(['?']*len(t_idList)))
+# 		c.execute(addtotalsql, t_idList)	
 		
-	conn.commit()
-	conn.close()
+# 	conn.commit()
+# 	conn.close()
 	
-	return
+# 	return
 
 	
-def index2(request):
+# def index2(request):
 
-	if request.method != 'GET':
-		return JsonResponse({'Error':'Please use get request'})
+# 	if request.method != 'GET':
+# 		return JsonResponse({'Error':'Please use get request'})
 	
-	if not request.GET.__contains__('q'):
-		return JsonResponse({'Error':'Please add key wclea to get request'})
+# 	if not request.GET.__contains__('q'):
+# 		return JsonResponse({'Error':'Please add key wclea to get request'})
 	
-	if request.GET.__contains__('t'):
-		handleUpdate(request)
-		return JsonResponse({})
-	else:
-		sortedTags = handleQuery(request)
-		return JsonResponse(
-		{
-			'tags':sortedTags
-		});
+# 	if request.GET.__contains__('t'):
+# 		handleUpdate(request)
+# 		return JsonResponse({})
+# 	else:
+# 		sortedTags = handleQuery(request)
+# 		return JsonResponse(
+# 		{
+# 			'tags':sortedTags
+# 		});
 
 @csrf_exempt		
 def add_ques(d):
