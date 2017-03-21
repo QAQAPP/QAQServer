@@ -89,8 +89,11 @@ def handleQuery(request):
 	
 	numberOfTags = min(maxnumtag, len(sortedTags))
 	
-	return sortedTags[:numberOfTags]
-	#return []
+	result = []
+	for i in range (0, numberOfTags):
+		result.append(sortedTags[i][0])
+
+	return result
 	
 def handleUpdate(request):
 	emptyArr = []
@@ -107,8 +110,8 @@ def handleUpdate(request):
 	tagstring = request.GET.get('t')
 	tagstring = tagstring.lower()
 	tags = tagstring.split(',', 11)
-	for tag in tags:
-		tag = tag.strip()
+	for index, tag in enumerate(tags):
+		tags[index] = tag.strip()
 	
 	wordDictList = googleEntityAnalysis(question)
 	
