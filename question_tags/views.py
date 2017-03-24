@@ -163,21 +163,54 @@ def handleUpdate(request):
 	return
 
 	
+def handleTagQuery(request):
+	arr = []
+	if request.method != 'GET':
+		return arr
+	if not request.GET.__contains__('t'):
+		return arr
+		
+	query = request.GET.get('t')
+	
+	query = query.strip()
+	query = query.lower()
+	
+	maxnumberoftags = 8
+	tags = Tag.objects.filter(name__icontains=query)[:maxnumberoftags]
+	
+	for tag in tags:
+		arr.append(tag.name)
+		
+	return arr
+		
+	
+	
+	
+	
+	
+	
+	
 def index(request):
 
 	if request.method != 'GET':
 		return JsonResponse({'Error':'Please use get request'})
 	
-	if not request.GET.__contains__('q'):
-		return JsonResponse({'Error':'Please add key wclea to get request'})
+	#if not request.GET.__contains__('q'):
+	#	return JsonResponse({'Error':'Please add key wclea to get request'})
 	
-	if request.GET.__contains__('t'):
+	if request.GET.__contains__('t') and request.GET.__contains__('q'):
 		handleUpdate(request)
 		return JsonResponse({})
-	else:
+	elif request.GET.__contains__('q'):
 		sortedTags = handleQuery(request)
 		return JsonResponse(
 		{
 			'tags':sortedTags
 		});
+		
+	elif request.GET.__contains__('t'):
+		tags = handleTagQuery(request)
+		return JsonResponse({
+			'tags':tags
+		})
 		
