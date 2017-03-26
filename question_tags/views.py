@@ -175,13 +175,32 @@ def handleTagQuery(request):
 	query = query.strip()
 	query = query.lower()
 	
-	maxnumberoftags = 8
-	tags = Tag.objects.filter(name__icontains=query)[:maxnumberoftags]
+	maxnumberoftags = 3
+	tagdict = {}
+
+	count = 1
+	startwithtags = Tag.objects.filter(name__istartswith=query)[:maxnumberoftags]
+	if (len(startwithtags) >= maxnumberoftags):
+		for tag in startwithtags:
+			arr.append(tag.name)
+		return arr
+
+	for tag in startwithtags:
+		if(tagdict.has_key(tag.name) == False):
+			tagdict[tag.name] = count
+			count = count + 1
 	
-	for tag in tags:
-		arr.append(tag.name)
-		
-	return arr
+	containtags = Tag.objects.filter(name__icontains=query)[:maxnumberoftags]
+	for tag in containtags:
+		if(tagdict.has_key(tag.name) == False):
+			tagdict[tag.name] = count
+			count = count + 1
+
+	sortedTags = sorted(tagdict.items(), key = operator.itemgetter(1), reverse=False)
+	for tag in sortedTags:
+		arr.append(tag[0])
+	
+	return arr[:maxnumberoftags]
 		
 	
 	
