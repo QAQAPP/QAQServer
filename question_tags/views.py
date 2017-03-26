@@ -61,7 +61,7 @@ def handleQuery(request):
 	question = request.GET.get('q')
 	wordList = googleEntityAnalysis(question)
 	
-	maxnumtag = 8;
+	maxnumtag = 3;
 	tagDict = {}
 	for word in wordList:
 		wordName = word['name']
@@ -175,7 +175,7 @@ def handleTagQuery(request):
 	query = query.strip()
 	query = query.lower()
 	
-	maxnumberoftags = 3
+	maxnumberoftags = 10
 	tagdict = {}
 
 	count = 1
