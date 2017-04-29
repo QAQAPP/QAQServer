@@ -356,8 +356,8 @@ def index(request):
 		return add_ques(d)
 	elif action == 'conclude_ques':
 		conclude(d)
-	elif action == 'update_database':
-		up_data()
+	#elif action == 'update_database':
+		#up_data()
 	return JsonResponse(
 		{
 			'success':True,
