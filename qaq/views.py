@@ -346,7 +346,8 @@ def index(request):
 	if request.method != 'POST':
 		return JsonResponse({'Error':'Please use POST request'})
 	
-	d = json.loads(request.body.decode('utf-8'))
+	#d = json.loads(request.body.decode('utf-8'))
+	d = json.loads(request.body)
 	d = defaultdict(lambda: None, d)
 	action = d['action']
 	if action == 'get_questions':
