@@ -99,12 +99,12 @@ def handleUpdate(request):
 	emptyArr = []
 	if request.method != 'GET':
 		return emptyArr
-	if not request.GET.__contains__('q'):
+	if not request.GET.__contains__('w'):
 		return emptyArr
 	if not request.GET.__contains__('t'):
 		return emptyArr
 	
-	question = request.GET.get('q')
+	question = request.GET.get('w')
 	#TODO
 	#wordList = wordListString.split(',',5)
 	tagstring = request.GET.get('t')
@@ -217,7 +217,7 @@ def index(request):
 	#if not request.GET.__contains__('q'):
 	#	return JsonResponse({'Error':'Please add key wclea to get request'})
 	
-	if request.GET.__contains__('t') and request.GET.__contains__('q'):
+	if request.GET.__contains__('t') and request.GET.__contains__('w'):
 		handleUpdate(request)
 		return JsonResponse({})
 	elif request.GET.__contains__('q'):
