@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'ebdjango.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Matthew_Test_Database',
+        'NAME': 'QAQ_Production_Tmp',
         'USER': 'Matthew_Lam',
         'PASSWORD': 'fareed_f',
         'HOST': 'matthew-test-instance.cy4v75d6qra7.us-west-2.rds.amazonaws.com',
