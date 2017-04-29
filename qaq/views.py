@@ -181,6 +181,15 @@ def googleEntityAnalysis(sentence):
 # 			'tags':sortedTags
 # 		});
 
+@csrf_exempt
+def up_data():
+	with open('voceler-8d934-export.json') as data_file:
+		d = json.load(data_file)
+	questions = d['Questions-v1']
+	for key,value in questions:
+		q = Question(qid = key, qTags = '', qTime = int(round(time.time() * 10)))
+		q.save()
+		print(q.qid)
 @csrf_exempt		
 def add_ques(d):
 	#question = d['qDescription']
@@ -333,8 +342,10 @@ def conclude(d):
 
 @csrf_exempt
 def index(request):
+	up_data()
 	if request.method != 'POST':
 		return JsonResponse({'Error':'Please use POST request'})
+	
 	d = json.loads(request.body.decode('utf-8'))
 	d = defaultdict(lambda: None, d)
 	action = d['action']
@@ -344,6 +355,8 @@ def index(request):
 		return add_ques(d)
 	elif action == 'conclude_ques':
 		conclude(d)
+	elif action == 'update_database':
+		up_data()
 	return JsonResponse(
 		{
 			'success':True,
