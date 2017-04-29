@@ -338,11 +338,11 @@ def choose_op(d):
 def conclude(d):
 	q = Question.objects.get(qid = d['qid'])
 	q.concluded = True
-	q.save()
+	q.save() 
 
 @csrf_exempt
 def index(request):
-	up_data()
+	#up_data()
 	if request.method != 'POST':
 		return JsonResponse({'Error':'Please use POST request'})
 	
