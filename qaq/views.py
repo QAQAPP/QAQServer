@@ -181,6 +181,11 @@ def googleEntityAnalysis(sentence):
 # 			'tags':sortedTags
 # 		});
 
+@csrf_exempt
+def up_data(d):
+	questions = d['Questions-v1']
+	for key,value in questions:
+		q = Question(qid = key, qTags = '', qTime = int(round(time.time() * 10)))
 @csrf_exempt		
 def add_ques(d):
 	#question = d['qDescription']
@@ -344,6 +349,8 @@ def index(request):
 		return add_ques(d)
 	elif action == 'conclude_ques':
 		conclude(d)
+	elif action == 'update_database':
+		up_data(d)
 	return JsonResponse(
 		{
 			'success':True,
